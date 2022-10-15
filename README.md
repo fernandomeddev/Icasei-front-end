@@ -62,5 +62,3 @@ Essa tela deve ter um botão para voltar, exibindo os últimos resultados da bus
 - Uso do Git
 - Componentização
 - Usabilidade/Acessibilidade
-
-readme

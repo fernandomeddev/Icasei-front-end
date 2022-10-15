@@ -1,7 +1,10 @@
 import { createContext, ReactNode, useState } from 'react';
 
+import { api } from '../services/apiClient';
+
 import { destroyCookie } from 'nookies'
 import Router from 'next/router';
+import { config } from 'process';
 
 type AuthContextData = {
     user: UserProps;
@@ -40,7 +43,23 @@ export function AuthProvider({ children }: AuthProviderProps ){
     const isAuthenticated = !!user;
 
     async function signIn({email}: SignInProps){
-        console.log('user email', email)
+        let config = {
+            headers: {
+              "Content-Type": "application/json",
+              'Access-Control-Allow-Origin': '*',
+              }
+            }
+        console.log(email)
+        try{
+            const response = await api.post('/signin', {
+                email,
+                config
+            })
+
+            console.log(response.data);
+        } catch(err) {
+            console.log('erro ao acessar', err)
+        }
     }
 
     return(

@@ -7,16 +7,19 @@ import { signOut } from '../contexts/AuthContext'
 export function setupAPIClient(ctx = undefined){
     let cookies = parseCookies(ctx);
     const api = axios.create({
-        baseURL:'http://localhost:3001',
+        baseURL:'http://localhost:3333',
         headers: {
-            Authorization: `Bearer ${cookies['@nextauth.token']}`
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${cookies['@nextauth.token']}`,
+            
         }
     })
 
     api.interceptors.response.use(response =>{
         return response;
     }, (error: AxiosError) => {
-        if(error.response.status ===401){
+        if(error.response.status === 401){
             // qualquer 401 ( nao autorizado ) devemos deslogar o usuário
             if(typeof window !== undefined){
                 // chama a função que desloga um usuário

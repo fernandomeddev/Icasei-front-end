@@ -1,17 +1,19 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended: true }))
+require('dotenv').config()
+const app = require("express")()
+const consign = require('consign')
 
-const consign = require('consign');
-require('./src/server/mongodb')
+require('./config/mongodb')
 
 consign()
-    .then('./src/config/middleware.js')
-    .then('./src/routes')
-    .into(app)
+.include('./config/passport.js')
+.then('./config/middlewares.js')
+.then('./api/validation.js')
+.then('./api')
+.then('./config/routes.js')
+.into(app)
 
-app.listen(3333 , () => {
-    console.log('backend is running...');
-});
+app.get('/', (req, res) => {
+    res.status(200).json({ msg:"welcome to my API!"})
+})
+
+app.listen(3333)

@@ -1,4 +1,4 @@
-const mongoose = require('../server/Mongodb');
+const mongoose = require('../config/Mongodb');
 
 const IndividualSchema = new mongoose.Schema({
     name: {
