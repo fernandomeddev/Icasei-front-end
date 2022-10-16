@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState, useEffect } from 'react';
 
 import { api } from '../services/apiClient';
 
@@ -38,6 +38,10 @@ export const AuthContext = createContext({} as AuthContextData)
 
 export function signOut(){
     try {
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("user_email");
+        localStorage.removeItem("user_name");
+
         destroyCookie(undefined, '@nextauth.token' )
         Router.push('/')
     } catch(error) {
@@ -49,14 +53,33 @@ export function AuthProvider({ children }: AuthProviderProps ){
     const [ user, setUser] = useState<UserProps>()
     const isAuthenticated = !!user;
 
+    useEffect(() => {
+        const { '@nextauth.token': token } = parseCookies();
+        if(token){
+            const name = localStorage.getItem("user_name");
+            const user_name = JSON.parse(name)
+            const email = localStorage.getItem("user_email");
+            const user_email = JSON.parse(email)
+
+            setUser({
+                id: null,
+                name: user_name,
+                email: user_email
+            })
+        }  
+    }, [])
+
+
     async function signIn({email}: SignInProps){
         try{
             const response = await api.post('/signin', {
                 email
             })
-            //console.log(response.data);
             
-            const { id, name, token, iat, exp } = response.data;
+            const { _id, name, token, iat, exp } = response.data;
+            localStorage.setItem('user_id', JSON.stringify(_id));
+            localStorage.setItem('user_email', JSON.stringify(email));
+            localStorage.setItem('user_name', JSON.stringify(name));
 
             // expires cookies options
             // const expYear = 60 * 60 * 24 * 365; Year
@@ -69,7 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps ){
             })
 
             setUser({
-                id,
+                id: _id,
                 name,
                 email
             })
