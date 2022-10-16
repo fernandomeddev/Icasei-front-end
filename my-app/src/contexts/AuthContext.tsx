@@ -4,7 +4,8 @@ import { api } from '../services/apiClient';
 
 import { destroyCookie, setCookie, parseCookies } from 'nookies'
 import Router from 'next/router';
-import { config } from 'process';
+
+import { toast } from 'react-toastify'
 
 type AuthContextData = {
     user: UserProps;
@@ -75,9 +76,12 @@ export function AuthProvider({ children }: AuthProviderProps ){
 
             api.defaults.headers['Authorization'] = `Bearer ${token}`
 
+            toast.success("Success!")
+
             Router.push('/dashboard')
 
         } catch(err) {
+            toast.error("access not alow")
             console.log('erro ao acessar', err)
         }
     }
@@ -89,12 +93,12 @@ export function AuthProvider({ children }: AuthProviderProps ){
                 email
             })
 
-            console.log(response.data.msg);
+            toast.success(response.data.msg)
 
             Router.push('/');
 
         } catch (error) {
-            console.log('error ao cadastrar', error)
+            toast.error(error)
         }
     
     }
