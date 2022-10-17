@@ -39,8 +39,19 @@
 }
 
 .videoContent{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    
 
-    h1{
+    h2{
         color: var(--white);
     }
+}
+
+.modal{
+    width: 100%;
+    height: 100%;
 }

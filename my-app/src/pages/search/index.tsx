@@ -70,10 +70,6 @@ export default function Search() {
        }
     }
 
-    async function showModal(id:string) {
-        alert(id)
-    }
-
     if( result){
         return(
             <>
@@ -95,16 +91,17 @@ export default function Search() {
                             <button className={styles.buttonSearch} type="submit">
                                 Search
                             </button>
-                        </form>
-                    </main>
-                </div>
-                    <div>
+                            <hr /><hr />
+                            <div>
                     {videos.map((video) =>(
                         <div key={video.id.videoId} >
                             <div >
                                 <div className={styles.videoContent}>
-                                    <h1>{video.snippet.title}</h1>
-                                    <iframe width="560" height="315" src={`https://www.youtube.com/embed/${video.id.videoId}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                    <h2>{video.snippet.title}</h2>
+                                    
+                                </div>
+                                <div>
+                                <img src={video.snippet.thumbnails.high.url}  alt="thumbnails" />
                                 </div>
                                 <div>
                                 <Button variant="danger" onClick={() => {
@@ -113,17 +110,21 @@ export default function Search() {
                                 }}>
                                     show more
                                 </Button>
-                                <Modal show={show} onHide={handleClose}>
+                                <hr /><hr />
+                                <Modal className={styles.modal} show={show} onHide={handleClose}>
                                     <Modal.Header closeButton>
                                     <Modal.Title>{modalData?.snippet.title}</Modal.Title>
                                     </Modal.Header>
-                                    <Modal.Body> <iframe width="560" height="315" src={`https://www.youtube.com/embed/${modalData?.id.videoId}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe> <p>{ modalData?.snippet.description }</p> </Modal.Body>
+                                    <Modal.Body> <iframe width="100%" height="500px" src={`https://www.youtube.com/embed/${modalData?.id.videoId}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                    <div>
+                                        <p>Descrição:</p>
+                                        <p>{ modalData?.snippet.description }</p>
+                                    </div>
+                                      </Modal.Body>
                                     <Modal.Footer>
-                                    <Button variant="secondary" onClick={handleClose}>
+                                        
+                                    <Button variant="danger" onClick={handleClose}>
                                         Close 
-                                    </Button>
-                                    <Button variant="primary" onClick={handleClose}>
-                                        Save Changes
                                     </Button>
                                     </Modal.Footer>
                                 </Modal>
@@ -132,6 +133,10 @@ export default function Search() {
                         </div>
                         ))}
                     </div>
+                        </form>
+                    </main>
+                </div>
+                    
             </>
         )
     }
