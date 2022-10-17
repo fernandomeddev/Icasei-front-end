@@ -43,8 +43,13 @@ module.exports = app => {
         if(!individual){
             return res.status(404).send('usuário não econtrado')
         }
-
-        return res.status(200).send('usuário encontrado com sucesso!')
+        const {name, email} = individual;
+        return res.json({
+            data:{
+                name,
+                email
+            }
+        })
 
     }
 
