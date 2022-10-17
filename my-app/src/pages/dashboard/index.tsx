@@ -1,11 +1,8 @@
 import { canSSRAuth } from './../../utils/canSSRAuth';
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../../../styles/home.module.scss';
-import logo2 from '../../../public/med2.png';
 
-import { Header } from '../../components/ui/header';
-import { Input } from '../../components/ui/Input';
+import Head from 'next/head';
+
+import { Header } from '../../components/ui/Header';
 
 export default function Dashboard(){
 
@@ -15,9 +12,8 @@ export default function Dashboard(){
             <title> Dashboard </title>
         </Head>
         <div>
-            <Header />
+            <Header /> 
         </div>
-    
         </>
     )
 }

@@ -101,7 +101,7 @@ export function AuthProvider({ children }: AuthProviderProps ){
 
             toast.success("Success!")
 
-            Router.push('/dashboard')
+            Router.push('/search')
 
         } catch(err) {
             toast.error("access not alow")
