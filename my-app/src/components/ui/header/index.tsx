@@ -3,9 +3,8 @@ import styles from './styles.module.scss';
 import Link from 'next/link';
 
 import { FiLogOut } from 'react-icons/fi';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { useEffect, useState } from 'react';
+
 
 export function Header() {
 
@@ -22,14 +21,8 @@ export function Header() {
                 <nav className={styles.menuNav}>
 
                     <Link href="/search">
-                        <a> Welcome! {user?.name} </a>
-                    </Link>
-                    <Link href="/search">
-                        <button>
-                            <AiOutlineSearch color="#FFF" size={24}/>
-                        </button>
-                    </Link>
-                    
+                        <h2>{user?.name} </h2>
+                    </Link> 
                     <button onClick={signOut}>
                         <FiLogOut  color="#FFF" size={24}/>
                     </button>

@@ -1,5 +1,8 @@
 import { useState, FormEvent } from "react";
 
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+
 import youtube from '../../services/youtube/youtube'
 import { GetServerSideProps, NextPage } from 'next'
 
@@ -39,60 +42,96 @@ interface Video {
   type Props = StateProps;
 
 
-const Search: NextPage<Props> = ({ videos }: Props) => {
-    const renderPosts = () => {
-        const postList = Array.from(videos).filter((i) => (i.id.videoId))
-            .reverse().map((post: Video) => {
-                const description = post.snippet.description;
+export default function Search() {
+    const [ query, setQuery ] = useState('')
+    const [ result, setResult ] = useState(false)
+    const [ videos, setVideos ] = useState([])
+    const [ loading, setLoading ] = useState(false)
+    const [show, setShow] = useState(false);
+    const [modalData, setModalData] = useState(null);
 
-                return (
-                    <>
-                        <ul>
-                            <li key={post.id.videoId}>
-                                <div>
-                                    <iframe src={`http://www.youtube.com/embed/${post.id.videoId}`}></iframe>
-                                </div>
-                                <h2>
-                                    {post.snippet.title}
-                                </h2>
-                                <p>
-                                    {description}
-                                </p>
-                            </li>
-                        </ul>
-                    </>
-                    
-                )
-            });
+    const handleClose = () => setShow(false);
 
-        return (
-            <ul>
-                { postList }
-            </ul>
-        )
-    }
-
-    const [ query, setQuery] = useState('')
-    const [ result, setResult] = useState(false)
-    const [ loading, setLoading] = useState(false)
 
     async function handleSearch(event: FormEvent) {
         event.preventDefault();
 
        if(query === ''){
-        return console.log('vazio')
+        setResult(false)
+        return 
        }
        const response = await youtube.get('/search', {params: { q: query}});
+       
        console.log(response)
-       if(response){
+       if(response.data){
+        setVideos(response.data.items)
+        console.log(videos)
         setResult(true)
        }
     }
-    
+
+    async function showModal(id:string) {
+        alert(id)
+    }
+
     if( result){
         return(
             <>
-                {  renderPosts() }
+                <Head>
+                    <title>Search || MedTube</title>
+                </Head>
+                <div>
+                    <Header />
+                    <main className={styles.container}>
+                        <form className={styles.form} onSubmit={handleSearch}>
+                            <input 
+                                type="text"
+                                placeholder="search..."
+                                className={styles.input}
+                                value={query}
+                                onChange={ (e) => setQuery(e.target.value )}
+                                />
+                            
+                            <button className={styles.buttonSearch} type="submit">
+                                Search
+                            </button>
+                        </form>
+                    </main>
+                </div>
+                    <div>
+                    {videos.map((video) =>(
+                        <div key={video.id.videoId} >
+                            <div >
+                                <div className={styles.videoContent}>
+                                    <h1>{video.snippet.title}</h1>
+                                    <iframe width="560" height="315" src={`https://www.youtube.com/embed/${video.id.videoId}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                </div>
+                                <div>
+                                <Button variant="danger" onClick={() => {
+                                    setModalData(video);
+                                    setShow(true);
+                                }}>
+                                    show more
+                                </Button>
+                                <Modal show={show} onHide={handleClose}>
+                                    <Modal.Header closeButton>
+                                    <Modal.Title>{modalData?.snippet.title}</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body> <iframe width="560" height="315" src={`https://www.youtube.com/embed/${modalData?.id.videoId}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe> <p>{ modalData?.snippet.description }</p> </Modal.Body>
+                                    <Modal.Footer>
+                                    <Button variant="secondary" onClick={handleClose}>
+                                        Close 
+                                    </Button>
+                                    <Button variant="primary" onClick={handleClose}>
+                                        Save Changes
+                                    </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                                </div>
+                            </div>
+                        </div>
+                        ))}
+                    </div>
             </>
         )
     }
@@ -104,7 +143,6 @@ const Search: NextPage<Props> = ({ videos }: Props) => {
             <div>
                 <Header />
                 <main className={styles.container}>
-                    <h1>Campo de busca aqui</h1>
                     <form className={styles.form} onSubmit={handleSearch}>
                         <input 
                             type="text"
@@ -124,11 +162,7 @@ const Search: NextPage<Props> = ({ videos }: Props) => {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res}) =>{
-    res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=120'
-    )
+/* export const getServerSideProps: GetServerSideProps = async ({ req, res}) =>{
     const response = await youtube.get('/search', {params: { q: 'corinthians'}});
     const videos = response.data.items;
 
@@ -137,7 +171,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res}) =>{
             videos,
         }
     }
-}
-
-export default Search
+} */
 

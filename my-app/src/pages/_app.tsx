@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.css'; // Add this line
 import '../../styles/globals.scss'
 import { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';

@@ -21,6 +21,10 @@
     display: flex;
     align-items: center;
 
+    h2{
+        color: var(--white);
+    }
+
     a{
         color: var(--white);
         padding: 0 0.5rem;
@@ -48,4 +52,6 @@
         }
     }
 }
+
+
 
