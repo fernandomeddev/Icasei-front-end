@@ -3,9 +3,9 @@
 }
 
 .headerContent{
-    max-width: 1120px;
+    max-width: 100%;
     height: 5rem;
-    margin: 0 auto;
+    margin: 0;
     padding: 0 2 rem;
 
     display: flex;
@@ -21,6 +21,7 @@
 .menuNav{
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 
     h2{
         color: var(--white);
@@ -34,12 +35,9 @@
         color: var(--white);
         padding: 0 0.5rem;
         display: inline-block;
-        position: relative;
         transition: color 0.7s;
 
-        & + a {
-            margin-left: -70rem;
-        }
+        
 
         &:hover{
             color: var(--red-900);
@@ -47,6 +45,7 @@
     }
 
     button{
+        width: 80px;
         margin-left: 2rem;
         background: transparent;
         border: 0;

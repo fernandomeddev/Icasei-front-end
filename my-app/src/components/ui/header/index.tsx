@@ -24,7 +24,7 @@ export function Header() {
                         <h3>user: {user?.email} </h3>
                     </Link> 
                     <button onClick={signOut}>
-                        <FiLogOut  color="#FFF" size={24}/>
+                        <FiLogOut  color="#FFF" size={44}/>
                     </button>
                 </nav>
             </div>

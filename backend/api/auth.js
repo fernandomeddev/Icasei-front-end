@@ -47,7 +47,7 @@ module.exports = app => {
                 res.status(200).send('autenticado com sucesso', token)
             }
         } catch (error) {
-            console.log(error)
+            res.status(400)
         }
 
         res.send(false)

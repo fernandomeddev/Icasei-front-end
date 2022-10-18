@@ -45,7 +45,7 @@ export function signOut(){
         destroyCookie(undefined, '@nextauth.token' )
         Router.push('/')
     } catch(error) {
-        console.log('erro ao deslogar', error)
+        toast.error("access not alow")
     }
 }
 
@@ -105,7 +105,6 @@ export function AuthProvider({ children }: AuthProviderProps ){
 
         } catch(err) {
             toast.error("access not alow")
-            console.log('erro ao acessar', err)
         }
     }
 

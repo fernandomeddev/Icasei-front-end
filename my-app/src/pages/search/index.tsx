@@ -12,7 +12,6 @@ import { CardVideo} from '../../components/CardVideo'
 import { Header } from "../../components/ui/Header";
 import styles from "./styles.module.scss";
 
-import Link from "next/link";
 
 export type VideoProps = {
     "kind": "youtube#searchResult",
@@ -58,7 +57,6 @@ export default function Search({ videos }: SearchProps) {
     async function handleOpenModalView(id: string){
     
         const response = await youtubeVideoById.get(`/videos`, { params: { id: id }});
-        console.log(response.data)
         setModalItem(response.data.items)
         setModalVisible(true)
     }
@@ -74,7 +72,6 @@ export default function Search({ videos }: SearchProps) {
        
        if(response.data){
         setResultSearch(response.data.items)
-        console.log(resultSerach)
         setChopper(true)
        }
     }

@@ -31,7 +31,6 @@ module.exports = app => {
 
         } catch (error) {
 
-            console.log(error)
             res.status(500).json({msg: "tente novamente mais tarde"})
         }
     }
