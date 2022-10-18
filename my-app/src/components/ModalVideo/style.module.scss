@@ -1,0 +1,25 @@
+.container{
+    max-width: 900px;
+    
+    background-color: var(--dark-700);
+    color: var(--white);
+}
+
+.container h2{
+    margin: 1rem 0;
+}
+
+.containeritem{
+    display: flex;
+    flex-direction: column;
+}
+
+.likes{
+    display: flex;
+    flex-direction: row;
+
+    span{
+        margin: 1.1rem;
+    }
+
+}

@@ -1,17 +1,19 @@
 import { useState, FormEvent } from "react";
+import Modal from 'react-modal';
 
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { canSSRAuth } from "../../utils/canSSRAuth";
 
-import youtube from '../../services/youtube/youtube'
-import { GetServerSideProps, NextPage } from 'next'
+import apiyoutube from '../../services/youtube/youtube'
+import youtubeVideoById from "../../services/youtube/youtube_video";
 
 import Head from "next/head";
+import { ModalVideo } from '../../components/ModalVideo';
 import { Header } from "../../components/ui/Header";
 import styles from "./styles.module.scss";
-import { toast } from "react-toastify";
 
-interface Video {
+import Link from "next/link";
+
+export type VideoProps = {
     "kind": "youtube#searchResult",
     "id": {
       "kind": string,
@@ -25,7 +27,7 @@ interface Video {
       "title": string,
       "description": string,
       "thumbnails": {
-        (key: any): {
+        high: {
           "url": string,
           "width": string,
           "height": string
@@ -35,42 +37,52 @@ interface Video {
     }
   }
 
-  interface StateProps {
-    videos: Video[],
+  interface SearchProps{
+    videos: VideoProps[],
   }
 
-  type Props = StateProps;
 
-
-export default function Search() {
+export default function Search({ videos }: SearchProps) {
     const [ query, setQuery ] = useState('')
-    const [ result, setResult ] = useState(false)
-    const [ videos, setVideos ] = useState([])
-    const [ loading, setLoading ] = useState(false)
-    const [show, setShow] = useState(false);
-    const [modalData, setModalData] = useState(null);
+    const [ chopper, setChopper ] = useState(false)
 
-    const handleClose = () => setShow(false);
+    const [resultSerach , setResultSearch ] = useState([])
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalItem, setModalItem] = useState<VideoProps[]>(null);
+    // implementar loading
 
+    function handleCloseModal (){
+        setModalVisible(false);
+    } 
+
+    async function handleOpenModalView(id: string){
+    
+        const response = await youtubeVideoById.get(`/videos`, { params: { id: id }});
+        console.log(response.data)
+        setModalItem(response.data.items)
+        setModalVisible(true)
+    }
 
     async function handleSearch(event: FormEvent) {
         event.preventDefault();
 
        if(query === ''){
-        setResult(false)
+        setChopper(false)
         return 
        }
-       const response = await youtube.get('/search', {params: { q: query}});
+       const response = await apiyoutube.get('/search', {params: { q: query }});
        
-       console.log(response)
+       //console.log(response)
        if(response.data){
-        setVideos(response.data.items)
-        console.log(videos)
-        setResult(true)
+        setResultSearch(response.data.items)
+        console.log(resultSerach)
+        setChopper(true)
        }
     }
 
-    if( result){
+    Modal.setAppElement('#__next');
+
+    if(chopper){
         return(
             <>
                 <Head>
@@ -91,55 +103,40 @@ export default function Search() {
                             <button className={styles.buttonSearch} type="submit">
                                 Search
                             </button>
-                            <hr /><hr />
-                            <div>
-                    {videos.map((video) =>(
-                        <div key={video.id.videoId} >
-                            <div >
-                                <div className={styles.videoContent}>
-                                    <h2>{video.snippet.title}</h2>
-                                    
-                                </div>
-                                <div>
-                                <img src={video.snippet.thumbnails.high.url}  alt="thumbnails" />
-                                </div>
-                                <div>
-                                <Button variant="danger" onClick={() => {
-                                    setModalData(video);
-                                    setShow(true);
-                                }}>
-                                    show more
-                                </Button>
-                                <hr /><hr />
-                                <Modal className={styles.modal} show={show} onHide={handleClose}>
-                                    <Modal.Header closeButton>
-                                    <Modal.Title>{modalData?.snippet.title}</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body> <iframe width="100%" height="500px" src={`https://www.youtube.com/embed/${modalData?.id.videoId}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                                    <div>
-                                        <p>Descrição:</p>
-                                        <p>{ modalData?.snippet.description }</p>
-                                    </div>
-                                      </Modal.Body>
-                                    <Modal.Footer>
-                                        
-                                    <Button variant="danger" onClick={handleClose}>
-                                        Close 
-                                    </Button>
-                                    </Modal.Footer>
-                                </Modal>
-                                </div>
-                            </div>
-                        </div>
-                        ))}
-                    </div>
+                            <hr />
                         </form>
+                        <div className={styles.containerVideos}>
+                        { resultSerach.map(video => (
+                            <section key={video.id.videoId}>
+                                <span>
+                                    <h2>{video.snippet.title}</h2>
+                                </span>
+                                <button onClick={ () => handleOpenModalView(video.id.videoId) }>
+                                    <div className="styles.tag">
+                                        <span>
+                                            <img src={video.snippet.thumbnails.high.url}  alt="thumbnails" />
+                                        </span>
+                                    </div>
+                                </button>
+                                <hr /><hr /><hr /><hr />
+                            </section>
+                        ))}
+                        </div>
                     </main>
-                </div>
-                    
+                    { modalVisible && (
+                        <ModalVideo 
+                        
+                        isOpen={modalVisible}
+                        onRequestClose={handleCloseModal}
+                        video={modalItem}
+
+                        />
+                    )}    
+                </div> 
             </>
         )
     }
+
     return(
         <>
             <Head>
@@ -160,6 +157,7 @@ export default function Search() {
                         <button className={styles.buttonSearch} type="submit">
                             Search
                         </button>
+                        { videos }
                     </form>
                 </main>
             </div>
@@ -167,14 +165,11 @@ export default function Search() {
     )
 }
 
-/* export const getServerSideProps: GetServerSideProps = async ({ req, res}) =>{
-    const response = await youtube.get('/search', {params: { q: 'corinthians'}});
-    const videos = response.data.items;
-
+export const getServerSideProps = canSSRAuth(async (ctx) =>{
+    
     return {
         props:{
-            videos,
+            
         }
     }
-} */
-
+})
