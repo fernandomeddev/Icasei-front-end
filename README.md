@@ -1,6 +1,5 @@
-# inicializando o back end Backend 
+# inicializando o back-end Backend 
 Realize o download do projeto
-git clone [link do repositorio]
 
 # Na pasta "backend" 
 instalar as dependencias via NPM ou YARN.
@@ -10,7 +9,7 @@ criar as variaveis de ambiente, para acesso ao MongoDB e Secret JWT, no arquivo 
 
 Para inicializar o projeto!
 
-npm start
+ execute npm start
 
 # Inicializando o front-end
 
@@ -22,4 +21,4 @@ git clone [link do repositorio]
 instalar as dependencias via NPM ou YARN.
 npm install OU yarn install
 
-criar as variaveis de ambiente, para utilizar a Api do Youtube, no arquivo .env (segue .env-example para facilitar em caso de duvidas).
+criar a variavel de ambiente, para utilizar a Api do Youtube, no arquivo .env (segue .env-example para facilitar em caso de duvidas).
