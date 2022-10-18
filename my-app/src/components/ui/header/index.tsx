@@ -15,7 +15,7 @@ export function Header() {
         <header className={styles.headerContainer}>
             <div className={styles.headerContent}>
                 <Link href="/search">
-                    <img src="./med4.png"  width={120} height={130}  />
+                    <img src="./med4.png"  width={320} height={330}  />
                 </Link>
 
                 <nav className={styles.menuNav}>

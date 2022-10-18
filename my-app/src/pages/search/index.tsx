@@ -8,6 +8,7 @@ import youtubeVideoById from "../../services/youtube/youtube_video";
 
 import Head from "next/head";
 import { ModalVideo } from '../../components/ModalVideo';
+import { CardVideo} from '../../components/CardVideo'
 import { Header } from "../../components/ui/Header";
 import styles from "./styles.module.scss";
 
@@ -49,7 +50,6 @@ export default function Search({ videos }: SearchProps) {
     const [resultSerach , setResultSearch ] = useState([])
     const [modalVisible, setModalVisible] = useState(false);
     const [modalItem, setModalItem] = useState<VideoProps[]>(null);
-    // implementar loading
 
     function handleCloseModal (){
         setModalVisible(false);
@@ -72,7 +72,6 @@ export default function Search({ videos }: SearchProps) {
        }
        const response = await apiyoutube.get('/search', {params: { q: query }});
        
-       //console.log(response)
        if(response.data){
         setResultSearch(response.data.items)
         console.log(resultSerach)
@@ -92,6 +91,7 @@ export default function Search({ videos }: SearchProps) {
                     <Header />
                     <main className={styles.container}>
                         <form className={styles.form} onSubmit={handleSearch}>
+                            <div className={styles.busca}>
                             <input 
                                 type="text"
                                 placeholder="search..."
@@ -103,26 +103,19 @@ export default function Search({ videos }: SearchProps) {
                             <button className={styles.buttonSearch} type="submit">
                                 Search
                             </button>
-                            <hr />
+                            </div>
+                            
                         </form>
-                        <div className={styles.containerVideos}>
+                    </main>
+                    <div className={styles.containerVideos}>
                         { resultSerach.map(video => (
                             <section key={video.id.videoId}>
-                                <span>
-                                    <h2>{video.snippet.title}</h2>
-                                </span>
                                 <button onClick={ () => handleOpenModalView(video.id.videoId) }>
-                                    <div className="styles.tag">
-                                        <span>
-                                            <img src={video.snippet.thumbnails.high.url}  alt="thumbnails" />
-                                        </span>
-                                    </div>
+                                    <CardVideo video={video} />
                                 </button>
-                                <hr /><hr /><hr /><hr />
                             </section>
                         ))}
                         </div>
-                    </main>
                     { modalVisible && (
                         <ModalVideo 
                         
@@ -145,21 +138,23 @@ export default function Search({ videos }: SearchProps) {
             <div>
                 <Header />
                 <main className={styles.container}>
-                    <form className={styles.form} onSubmit={handleSearch}>
-                        <input 
-                            type="text"
-                            placeholder="search..."
-                            className={styles.input}
-                            value={query}
-                            onChange={ (e) => setQuery(e.target.value )}
-                            />
-                        
-                        <button className={styles.buttonSearch} type="submit">
-                            Search
-                        </button>
-                        { videos }
-                    </form>
-                </main>
+                        <form className={styles.form} onSubmit={handleSearch}>
+                            <div className={styles.busca}>
+                            <input 
+                                type="text"
+                                placeholder="search..."
+                                className={styles.input}
+                                value={query}
+                                onChange={ (e) => setQuery(e.target.value )}
+                                />
+                            
+                            <button className={styles.buttonSearch} type="submit">
+                                Search
+                            </button>
+                            </div>
+                            
+                        </form>
+                    </main>
             </div>
         </>
     )
